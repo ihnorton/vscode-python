@@ -426,7 +426,7 @@ export class NativeEditor extends InteractiveBase implements INotebookEditor {
             // Make this error our cell output
             this.sendCellsToWebView([
                 {
-                    data: createCodeCell([info.code], [createErrorOutput(exc)]),
+                    data: createCodeCell([info.code], 0, [createErrorOutput(exc)]),
                     id: info.id,
                     file: Identifiers.EmptyFileName,
                     line: 0,

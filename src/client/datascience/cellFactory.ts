@@ -16,7 +16,7 @@ import { CellState, ICell } from './types';
 function generateCodeCell(code: string[], file: string, line: number, id: string, magicCommandsAsComments: boolean): ICell {
     // Code cells start out with just source and no outputs.
     return {
-        data: createCodeCell(code, magicCommandsAsComments),
+        data: createCodeCell(code, line, magicCommandsAsComments),
         id: id,
         file: file,
         line: line,

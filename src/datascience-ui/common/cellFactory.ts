@@ -47,16 +47,23 @@ export function createErrorOutput(error: Error): nbformat.IError {
 export function createCodeCell(): nbformat.ICodeCell;
 // tslint:disable-next-line: unified-signatures
 export function createCodeCell(code: string): nbformat.ICodeCell;
-export function createCodeCell(code: string[], outputs: nbformat.IOutput[]): nbformat.ICodeCell;
+export function createCodeCell(code: string[], line: number, outputs: nbformat.IOutput[]): nbformat.ICodeCell;
 // tslint:disable-next-line: unified-signatures
-export function createCodeCell(code: string[], magicCommandsAsComments: boolean): nbformat.ICodeCell;
-export function createCodeCell(code?: string | string[], options?: boolean | nbformat.IOutput[]): nbformat.ICodeCell {
+export function createCodeCell(code: string[], line: number, magicCommandsAsComments: boolean): nbformat.ICodeCell;
+export function createCodeCell(code?: string | string[], line?: number, options?: boolean | nbformat.IOutput[]): nbformat.ICodeCell {
     const magicCommandsAsComments = typeof options === 'boolean' ? options : false;
     const outputs = typeof options === 'boolean' ? [] : options || [];
     code = code || '';
     // If we get a string, then no need to append line feeds. Leave as is (to preserve existing functionality).
     // If we get an array, the append a linefeed.
-    const source = Array.isArray(code) ? appendLineFeed(code, magicCommandsAsComments ? uncommentMagicCommands : undefined) : code;
+    let source = Array.isArray(code) ? appendLineFeed(code, magicCommandsAsComments ? uncommentMagicCommands : undefined) : code;
+    if (line && line > 1) {
+        if (Array.isArray(source)) {
+            source.splice(1, 0, ...['#', ...Array(line + 1).fill('\n')]);
+        } else {
+            source = '#'.concat('\n'.repeat(line + 1).concat(source));
+        }
+    }
     return {
         cell_type: 'code',
         execution_count: null,
